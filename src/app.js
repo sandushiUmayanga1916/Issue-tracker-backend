@@ -41,4 +41,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error' });
 });
 
+app.get('/api/dbtest', async (req, res) => {
+  const { pool } = require('./config/db');
+  try {
+    const [rows] = await pool.execute('SELECT 1+1 AS result');
+    res.json({ db: 'connected', result: rows[0].result });
+  } catch (err) {
+    res.status(500).json({ db: 'failed', error: err.message, code: err.code });
+  }
+});
+
 module.exports = app;
